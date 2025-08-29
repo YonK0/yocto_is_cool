@@ -10,7 +10,7 @@ Let's say it's Yocto/Embedded Linux Hacking ^_^.
 
 ## Overview
 
-This repository contains my first Yocto project implementation, documenting the complete process of development. The project uses KAS for build automation and Docker for containerized development environment.
+This repository contains my first Yocto project implementation, documenting the complete process of development. The project uses KAS for build automation , Docker for containerized development environment and **No Poky**.
 
 ## Hardware Requirements
 
