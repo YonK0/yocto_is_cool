@@ -53,6 +53,8 @@ This repository contains my first Yocto project implementation, documenting the 
 
 ### 5. Docker HTTP Server Script
 - Developed script to setup docker HTTP server over packages deploy directory
+  <img width="1147" height="407" alt="image" src="https://github.com/user-attachments/assets/c4d9bbb9-5669-40e1-a714-61ebd7b6cc48" />
+
 
 ## Custom Machine Development
 
@@ -124,6 +126,10 @@ RPI_EXTRA_CONFIG = "dtoverlay=myled"
 
 ### Testing:
 - Successfully controlled LED: `echo 1 > /sys/class/leds/simple_led/brightness`
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/0c15491c-a93c-4326-9d65-11cac9fbcb21" height="400">
+</div>
+
 
 ### 5. Kernel Module Recipe
 
@@ -138,6 +144,9 @@ RPI_EXTRA_CONFIG = "dtoverlay=myled"
 ls /tmp/wic_rootfs/lib/modules/6.6.63-v7/updates/
 # Result: hello.ko.xz
 ```
+- Now let's test out module, in this case our module is a considered as standard kernel module , so i m using modprobe instead of insmod.
+- <img width="937" height="378" alt="image(1)" src="https://github.com/user-attachments/assets/fe7ad185-88cf-4b0a-8783-50bb0c122125" />
+
 
 ## Troubleshooting
 
