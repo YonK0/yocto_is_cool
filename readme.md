@@ -169,3 +169,6 @@ This is a learning project documenting my Yocto development journey. Feel free t
 ## License
 
 This project is for educational purposes. Please respect the individual licenses of the Yocto Project components and layers used.
+
+
+<img width="480" height="270" alt="image" src="https://github.com/user-attachments/assets/74d69365-fd52-476a-9ded-0ceb03faeb0c" />
