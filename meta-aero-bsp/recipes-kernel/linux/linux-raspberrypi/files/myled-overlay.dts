@@ -1,0 +1,17 @@
+// Minimal LED Device Tree Overlay
+/dts-v1/;
+/plugin/;
+
+/ {
+    fragment@0 {
+        target-path = "/";
+        __overlay__ {
+            my_leds: led_node {
+                compatible = "gpio-leds";
+                simple_led {
+                    gpios = <&gpio 18 0>;
+                };
+            };
+        };
+    };
+};

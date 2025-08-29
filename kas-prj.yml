@@ -1,0 +1,40 @@
+header:
+  version: 11
+
+machine: aero-rsp
+distro: nodistro
+target: core-image-minimal
+
+repos:
+  openembedded-core:
+    url: https://github.com/openembedded/openembedded-core.git
+    refspec: styhead
+    type: git
+    path: meta-layers/openembedded-core
+    layers:
+      meta: null
+
+  bitbake:
+    url: https://github.com/openembedded/bitbake.git
+    refspec: "2.10"
+    type: git
+    path: meta-layers/bitbake
+    layers:
+      bitbake: excluded
+
+  meta-raspberrypi:
+    url: https://git.yoctoproject.org/meta-raspberrypi
+    refspec: styhead
+    path: meta-layers/meta-raspberrypi
+    type: git
+
+  meta-aero-bsp:
+    path:  ${TOPDIR}/../meta-aero-bsp
+
+# Enabling build information output ? still confused where that information.
+local_conf_header:
+      my_custom_settings: |
+        DL_DIR = "/build/DD"
+        SSTATE_DIR = "/build/SS"
+
+#DD is creating if the bitbake is downloading something | SS is created when bitbake start cooking
