@@ -1,6 +1,7 @@
 # Yocto Project - Raspberry Pi Zero 2 W Build
 
 A custom embedded Linux distribution built with Yocto Project for Raspberry Pi Zero 2 W, featuring custom machine configuration, kernel optimizations, device tree overlays, and kernel modules.
+Big thanks to **Techleef** that gives me this opportunity.
 
 Disclaimer: This repository serves as both a functional Yocto project and comprehensive documentation of my learning journey. The content includes detailed notes, troubleshooting steps.
 
