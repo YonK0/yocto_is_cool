@@ -56,10 +56,10 @@ This repository contains my first Yocto project implementation, documenting the 
 
 ## Custom Machine Development
 
-### Creating Custom Layer (meta-aero-bsp)
+### 1. Creating Custom Layer (meta-aero-bsp)
 - Added new machine called `aero-RPI`
 
-## Boot Process
+### 2. Booting the image
 
 ### Flashing and Serial Connection
 ```bash
@@ -72,7 +72,7 @@ sudo dd if=core-image-minimal-aero-rsp.rootfs.wic of=/dev/mmcblk0 bs=1M status=p
 - **UART setup**: Add `ENABLE_UART = "1"` in kas file for FTDI usage
 - **Alternative flashing**: Balena Etcher proved easier and safer than dd
 
-## Machine Feature Control
+### 3. Machine Feature Control
 
 ### Check current features:
 ```bash
@@ -86,7 +86,7 @@ MACHINE_FEATURES:remove = 'apm usbhost keyboard screen touchscreen alsa bluetoot
 ```
 Result: `MACHINE_FEATURES="    vfat ext2     wifi"`
 
-## Kernel Optimization
+### 4. Kernel Optimization
 
 ### Remove Kernel from Rootfs
 - Attempted: `IMAGE_INSTALL:remove = "kernel-image kernel-devicetree kernel-base kernel-modules"`
@@ -109,7 +109,7 @@ diff ./linux-raspberrypi/6.6.63+git/sources-unpack/defconfig ./linux-raspberrypi
 grep SOUND .config  # Result: # CONFIG_SOUND is not set
 ```
 
-## Device Tree Overlay
+### 4. Device Tree Overlay
 
 ### LED Overlay Recipe
 - Added `led.dts` file under files directory
@@ -125,7 +125,7 @@ RPI_EXTRA_CONFIG = "dtoverlay=myled"
 ### Testing:
 - Successfully controlled LED: `echo 1 > /sys/class/leds/simple_led/brightness`
 
-## Kernel Module Recipe
+### 5. Kernel Module Recipe
 
 ### Setup:
 - Created `my_module` directory structure
