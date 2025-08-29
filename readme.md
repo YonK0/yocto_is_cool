@@ -143,7 +143,7 @@ ls /tmp/wic_rootfs/lib/modules/6.6.63-v7/updates/
 ### Build Error: Postinstall Intercept Hook Failed
 **Error**: `The postinstall intercept hook 'update_gio_module_cache' failed`
 
-**Solution**: `git restore meta-layers repos` (root cause unknown - some modifications in repos)
+**Solution**: `git restore meta-layers repos` (still don't know why there is modifications in those repo)
 
 ### Image Mounting:
 ```bash
@@ -168,7 +168,7 @@ This is a learning project documenting my Yocto development journey. Feel free t
 
 ## License
 
-This project is for educational purposes. Please respect the individual licenses of the Yocto Project components and layers used.
+This project is for educational purposes.
 
 
 ![ZKf5OzdXdjtRu](https://github.com/user-attachments/assets/13555cf8-3412-4455-a005-7a86fd6ecf34)
