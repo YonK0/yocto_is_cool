@@ -2,13 +2,15 @@
 
 A custom embedded Linux distribution built with Yocto Project for Raspberry Pi Zero 2 W, featuring custom machine configuration, kernel optimizations, device tree overlays, and kernel modules.
 
-Disclaimer: This repository serves as both a functional Yocto project and comprehensive documentation of my learning journey. The content includes detailed notes, troubleshooting steps.
+Big thanks to **Techleef** that gives me this opportunity.
+
+#### Disclaimer: This repository serves as both a functional Yocto project and comprehensive documentation of my learning journey. The content includes detailed notes and troubleshooting steps.
 
 Let's say it's Yocto/Embedded Linux Hacking ^_^.
 
 ## Overview
 
-This repository contains my first Yocto project implementation, documenting the complete process from initial setup to custom kernel module development. The project uses KAS for build automation and Docker for containerized development environment.
+This repository contains my first Yocto project implementation, documenting the complete process of development. The project uses KAS for build automation , Docker for containerized development environment and **No Poky**.
 
 ## Hardware Requirements
 
@@ -52,13 +54,15 @@ This repository contains my first Yocto project implementation, documenting the 
 
 ### 5. Docker HTTP Server Script
 - Developed script to setup docker HTTP server over packages deploy directory
+  <img width="1147" height="407" alt="image" src="https://github.com/user-attachments/assets/c4d9bbb9-5669-40e1-a714-61ebd7b6cc48" />
+
 
 ## Custom Machine Development
 
-### Creating Custom Layer (meta-aero-bsp)
+### 1. Creating Custom Layer (meta-aero-bsp)
 - Added new machine called `aero-RPI`
 
-## Boot Process
+### 2. Booting the image
 
 ### Flashing and Serial Connection
 ```bash
@@ -71,7 +75,7 @@ sudo dd if=core-image-minimal-aero-rsp.rootfs.wic of=/dev/mmcblk0 bs=1M status=p
 - **UART setup**: Add `ENABLE_UART = "1"` in kas file for FTDI usage
 - **Alternative flashing**: Balena Etcher proved easier and safer than dd
 
-## Machine Feature Control
+### 3. Machine Feature Control
 
 ### Check current features:
 ```bash
@@ -85,7 +89,7 @@ MACHINE_FEATURES:remove = 'apm usbhost keyboard screen touchscreen alsa bluetoot
 ```
 Result: `MACHINE_FEATURES="    vfat ext2     wifi"`
 
-## Kernel Optimization
+### 4. Kernel Optimization
 
 ### Remove Kernel from Rootfs
 - Attempted: `IMAGE_INSTALL:remove = "kernel-image kernel-devicetree kernel-base kernel-modules"`
@@ -108,7 +112,7 @@ diff ./linux-raspberrypi/6.6.63+git/sources-unpack/defconfig ./linux-raspberrypi
 grep SOUND .config  # Result: # CONFIG_SOUND is not set
 ```
 
-## Device Tree Overlay
+### 4. Device Tree Overlay
 
 ### LED Overlay Recipe
 - Added `led.dts` file under files directory
@@ -123,8 +127,12 @@ RPI_EXTRA_CONFIG = "dtoverlay=myled"
 
 ### Testing:
 - Successfully controlled LED: `echo 1 > /sys/class/leds/simple_led/brightness`
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/0c15491c-a93c-4326-9d65-11cac9fbcb21" height="400">
+</div>
 
-## Kernel Module Recipe
+
+### 5. Kernel Module Recipe
 
 ### Setup:
 - Created `my_module` directory structure
@@ -137,13 +145,75 @@ RPI_EXTRA_CONFIG = "dtoverlay=myled"
 ls /tmp/wic_rootfs/lib/modules/6.6.63-v7/updates/
 # Result: hello.ko.xz
 ```
+- Now let's test out module, in this case our module is a considered as standard kernel module , so i m using modprobe instead of insmod.
+- <img width="937" height="378" alt="image(1)" src="https://github.com/user-attachments/assets/fe7ad185-88cf-4b0a-8783-50bb0c122125" />
+
+### 6. Boot time optimization
+
+### Very minimal kernel defconfig
+- Very minimal kernel defconfig (already did, maybe adding more stuff) I found that I missed this one CONFIG_USB_SUPPORT.
+
+### Disable as much bootloader configs as possible
+- First reading the boot process messages, and I found that the boot is 8 seconds (that's too much)
+```
+[    0.200167] calling  deferred_probe_initcall+0x0/0x9c @ 1
+[    0.205851] probe of 3f101000.cprman returned 0 after 5512 usecs
+[    0.206178] uart-pl011 3f201000.serial: cts_event_workaround enabled
+[    0.206382] probe of 3f201000.serial:0 returned 0 after 30 usecs
+[    0.206485] probe of 3f201000.serial:0.0 returned 0 after 28 usecs
+[    0.206512] 3f201000.serial: ttyAMA1 at MMIO 0x3f201000 (irq = 114, base_baud = 0) is a PL011 rev2
+[    0.206746] serial serial0: tty port ttyAMA1 registered
+[    0.206835] probe of 3f201000.serial returned 0 after 945 usecs
+[    0.207494] probe of 3f215000.aux returned 0 after 588 usecs
+[    0.207569] bcm2835-aux-uart 3f215040.serial: there is not valid maps for state default
+[    0.207968] printk: console [ttyS0] disabled
+[    0.208276] probe of 3f215040.serial:0 returned 0 after 27 usecs
+[    0.208372] probe of 3f215040.serial:0.0 returned 0 after 26 usecs
+[    0.208399] 3f215040.serial: ttyS0 at MMIO 0x3f215040 (irq = 86, base_baud = 50000000) is a 16550
+[    0.208435] printk: console [ttyS0] enabled
+[    7.852532] probe of 3f215040.serial returned 0 after 7644975 usecs
+[    7.859468] bcm2835-wdt bcm2835-wdt: Broadcom BCM2835 watchdog timer
+[    7.865947] probe of bcm2835-wdt returned 0 after 6750 usecs
+[    7.871960] bcm2835-power bcm2835-power: Broadcom BCM2835 power domains driver
+[    7.879299] probe of bcm2835-power returned 0 after 7469 usecs
+[    7.885261] probe of 3f100000.watchdog returned 0 after 26243 usecs
+[    7.892078] probe of 3f212000.thermal returned 0 after 370 usecs
+[    7.898704] mmc-bcm2835 3f300000.mmcnr: mmc_debug:0 mmc_debug2:0
+[    7.904810] mmc-bcm2835 3f300000.mmcnr: DMA channel allocated
+[    7.931793] probe of 3f300000.mmcnr returned 0 after 33522 usecs
+[    7.938490] sdhost: log_buf @ 37041243 (d7d43000)
+[    7.990895] mmc0: sdhost-bcm2835 loaded - DMA enabled (>1)
+[    7.996685] probe of 3f202000.mmc returned 0 after 58719 usecs
+[    8.002764] initcall deferred_probe_initcall+0x0/0x9c returned 0 after 7802583 usecs
+```
+- bcm2835-aux-uart 3f215040.serial: there is not valid maps for state default, I noticed that there is a problem with initialization of serial driver, so I have reset cmdline.txt to default value using "bitbake -c clean rpi-cmdline" and changed from console=serial0 to ttyS0
+- Now the boot time is 1.7 seconds
+- For now I still don't know how I can change configs to cmdline.txt using my machine config, so I'm editing it manually. I hope I can find a solution ASAP.
+- Generated boot time graph with help of bootline documentation you find step and svg in **Doc** dir. 
+
+- Adding these to my machine config:
+```
+# Disable all unnecessary features
+    disable_splash=1
+    boot_delay=0
+    disable_overscan=1
+    # Minimal GPU memory
+    gpu_mem=16
+    # Disable audio completely
+    dtparam=audio=off
+    # Disable camera
+    start_x=0
+    # Disable HDMI
+    hdmi_blanking=2
+```
+- sadly, I couldn't see any difference in boot time for now.
 
 ## Troubleshooting
 
 ### Build Error: Postinstall Intercept Hook Failed
 **Error**: `The postinstall intercept hook 'update_gio_module_cache' failed`
 
-**Solution**: `git restore meta-layers repos` (root cause unknown - some modifications in repos)
+**Solution**: `git restore meta-layers repos` (still don't know why there is modifications in those repo)
 
 ### Image Mounting:
 ```bash
@@ -168,4 +238,8 @@ This is a learning project documenting my Yocto development journey. Feel free t
 
 ## License
 
-This project is for educational purposes. Please respect the individual licenses of the Yocto Project components and layers used.
+This project is for educational purposes.
+
+
+![ZKf5OzdXdjtRu](https://github.com/user-attachments/assets/13555cf8-3412-4455-a005-7a86fd6ecf34)
+
