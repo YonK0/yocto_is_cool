@@ -9,4 +9,5 @@ S = "${UNPACKDIR}"
 # Inherit the module class for building kernel modules
 inherit module
 
+# md5sum hello.c
 LIC_FILES_CHKSUM = "file://LICENSE;md5=d1235e54ccbde07b307b638c79b854fe"

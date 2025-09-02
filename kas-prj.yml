@@ -31,10 +31,10 @@ repos:
   meta-aero-bsp:
     path:  ${TOPDIR}/../meta-aero-bsp
 
-# Enabling build information output ? still confused where that information.
+# should i remove it from here, and use it in aero-rsp.conf ?
 local_conf_header:
       my_custom_settings: |
         DL_DIR = "/build/DD"
         SSTATE_DIR = "/build/SS"
 
-#DD is creating if the bitbake is downloading something | SS is created when bitbake start cooking
+#PS: DD is creating if the bitbake is downloading something | SS is created when bitbake start cooking

@@ -1,0 +1,40 @@
+<?xml version="1.0" standalone="no"?> 
+<svg width="2000" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<rect x="2.91737355057971" width="9.70192438330353" y="150" height="145" style="fill:rgb(0,0,255);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)"/>
+<text transform="translate(3.91737355057971,154) rotate(90)" font-size="3pt">of_platform_default_populate_init</text>
+<rect x="15.8104286232618" width="1.99189318849046" y="150" height="145" style="fill:rgb(0,255,0);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)"/>
+<text transform="translate(16.8104286232618,154) rotate(90)" font-size="3pt">chr_dev_init</text>
+<rect x="18.8475113059644" width="11.1565572636809" y="150" height="145" style="fill:rgb(255,0,20);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)"/>
+<text transform="translate(19.8475113059644,154) rotate(90)" font-size="3pt">init_blk_tracer</text>
+<rect x="32.5236834899841" width="1.95826970715714" y="150" height="145" style="fill:rgb(255,255,20);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)"/>
+<text transform="translate(33.5236834899841,154) rotate(90)" font-size="3pt">brd_init</text>
+<rect x="40.7170820370143" width="1.92536161904369" y="150" height="145" style="fill:rgb(255,0,255);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)"/>
+<text transform="translate(41.7170820370143,154) rotate(90)" font-size="3pt">slab_sysfs_init</text>
+<rect x="43.0650025845873" width="1860.64166369401" y="150" height="145" style="fill:rgb(0,255,255);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)"/>
+<text transform="translate(49.0650025845873,154) rotate(90)">deferred_probe_initcall</text>
+<rect x="1908.75424237351" width="2.35865144587137" y="150" height="145" style="fill:rgb(0,128,255);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)"/>
+<text transform="translate(1909.75424237351,154) rotate(90)" font-size="3pt">of_cfs_init</text>
+<rect x="1923.35923342131" width="2.19077250361102" y="150" height="145" style="fill:rgb(0,255,128);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)"/>
+<text transform="translate(1924.35923342131,154) rotate(90)" font-size="3pt">trace_eval_sync</text>
+<rect x="1928.47739498058" width="2.33265882554906" y="150" height="145" style="fill:rgb(255,0,128);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)"/>
+<text transform="translate(1929.47739498058,154) rotate(90)" font-size="3pt">latency_fsnotify_init</text>
+<rect x="1932.5489362592" width="1.88410727669884" y="150" height="145" style="fill:rgb(255,255,128);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)"/>
+<text transform="translate(1933.5489362592,154) rotate(90)" font-size="3pt">amba_stub_drv_init</text>
+<rect x="1937.13770683577" width="3.59294321453217" y="150" height="145" style="fill:rgb(255,128,255);fill-opacity:0.5;stroke-width:1;stroke:rgb(0,0,0)"/>
+<text transform="translate(1938.13770683577,154) rotate(90)" font-size="3pt">clk_disable_unused</text>
+<text transform="translate(0,89) rotate(90)">0.01</text>
+<text transform="translate(130,89) rotate(90)">0.56</text>
+<text transform="translate(260,89) rotate(90)">1.1</text>
+<text transform="translate(390,89) rotate(90)">1.65</text>
+<text transform="translate(520,89) rotate(90)">2.2</text>
+<text transform="translate(650,89) rotate(90)">2.74</text>
+<text transform="translate(780,89) rotate(90)">3.29</text>
+<text transform="translate(910,89) rotate(90)">3.83</text>
+<text transform="translate(1040,89) rotate(90)">4.38</text>
+<text transform="translate(1170,89) rotate(90)">4.92</text>
+<text transform="translate(1300,89) rotate(90)">5.47</text>
+<text transform="translate(1430,89) rotate(90)">6.01</text>
+<text transform="translate(1560,89) rotate(90)">6.56</text>
+<text transform="translate(1690,89) rotate(90)">7.1</text>
+<text transform="translate(1820,89) rotate(90)">7.65</text>
+</svg>
