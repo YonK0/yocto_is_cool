@@ -112,7 +112,7 @@ diff ./linux-raspberrypi/6.6.63+git/sources-unpack/defconfig ./linux-raspberrypi
 grep SOUND .config  # Result: # CONFIG_SOUND is not set
 ```
 
-### 4. Device Tree Overlay
+### 5. Device Tree Overlay
 
 ### LED Overlay Recipe
 - Added `led.dts` file under files directory
@@ -132,7 +132,7 @@ RPI_EXTRA_CONFIG = "dtoverlay=myled"
 </div>
 
 
-### 5. Kernel Module Recipe
+### 6. Kernel Module Recipe
 
 ### Setup:
 - Created `my_module` directory structure
@@ -148,7 +148,7 @@ ls /tmp/wic_rootfs/lib/modules/6.6.63-v7/updates/
 - Now let's test out module, in this case our module is a considered as standard kernel module , so i m using modprobe instead of insmod.
 - <img width="937" height="378" alt="image(1)" src="https://github.com/user-attachments/assets/fe7ad185-88cf-4b0a-8783-50bb0c122125" />
 
-### 6. Boot time optimization
+### 7. Boot time optimization
 
 ### Very minimal kernel defconfig
 - Very minimal kernel defconfig (already did, maybe adding more stuff) I found that I missed this one CONFIG_USB_SUPPORT.
@@ -207,6 +207,55 @@ ls /tmp/wic_rootfs/lib/modules/6.6.63-v7/updates/
     hdmi_blanking=2
 ```
 - sadly, I couldn't see any difference in boot time for now.
+### Use as minimum init manager services as possible
+
+- I couldn't a proper way to remove unecessary services, while im using sysvinit (default init manager), so i should remove manually that services from rootfs , to do that i need to create a recipe, not a package recipe like before but an image recipe, before creating it we need to know the process of image recipes.
+  
+### Package recipes process:
+- do_fetch → do_configure → do_compile → do_install → do_package
+### Image recipes process:
+- do_rootfs → ROOTFS_POSTPROCESS_COMMAND → do_image
+- That's why i created a new recipe called core-image-minimal.bbappend so i can append rootfs process by remove unecessary serices:
+```
+remove_unwanted_services(){
+    rm -f ${IMAGE_ROOTFS}/etc/init.d/networking
+    echo "-->removing ${IMAGE_ROOTFS}/rootfs/etc/init.d/networking"
+    rm -f ${IMAGE_ROOTFS}/etc/init.d/banner.sh
+
+    rm -f ${IMAGE_ROOTFS}/etc/rc*.d/*networking
+    rm -f ${IMAGE_ROOTFS}/etc/rc*.d/*banner
+}
+
+ROOTFS_POSTPROCESS_COMMAND:append = " \
+  remove_unwanted_services; \
+"
+```
+- clearing core-image-minimal do_rootfs then building again fix it as expected :
+```
+bitbake core-image-minimal -f -c do_rootfs
+bitbake core-image-minimal
+
+ls ./tmp/work/aero_rsp-oe-linux-gnueabi/core-image-minimal/1.0/rootfs/etc/init.d
+alignment.sh  checkroot.sh  functions    modutils.sh  populate-volatile.sh  read-only-rootfs-hook.sh  save-rtc.sh  stop-bootlogd  udev          urandom
+bootlogd      devpts.sh     halt         mountall.sh  rc                    reboot                    sendsigs     sysfs.sh       umountfs
+bootmisc.sh   dmesg.sh      hostname.sh  mountnfs.sh  rcS                   rmnologin.sh              single       syslog         umountnfs.sh
+
+```
+- YAY they are really removed.(it may could be another elegant method but this what i got for now).
+### Using u-boot instead of GPU directly bootloader:
+-Since I’m using a Raspberry Pi, the default bootloader is not U-Boot; it’s the GPU firmware bootloader, which uses these files: start*.elf, bootcode.bin, and kernel*.img. It’s easy to use, easy to configure, and requires no compilation, but it is very specific to the Raspberry Pi. That’s why I’m thinking of switching to U-Boot. Let’s do some U-Boot hacking ^_^.
+
+-PS: It's 2025 not 2024 hehe, we will fix it later.... 
+<img width="1527" height="519" alt="image" src="https://github.com/user-attachments/assets/367be217-53aa-45bb-8b9a-5ac1104b62cc" />
+
+
+
+
+### Using u-boot falcon mode:
+<img width="1566" height="871" alt="image" src="https://github.com/user-attachments/assets/bb6ad76b-49fa-4f8d-a367-6489aa67282f" />
+
+
+-Im planning to use falcon mode , but i don't found a good documentation for how to use it, we will get back to it later.
 
 ## Troubleshooting
 
