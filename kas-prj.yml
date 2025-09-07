@@ -2,7 +2,7 @@ header:
   version: 11
 
 machine: aero-rsp
-distro: nodistro
+distro: aero-distro
 target: core-image-minimal
 
 repos:
@@ -30,8 +30,11 @@ repos:
 
   meta-aero-bsp:
     path:  ${TOPDIR}/../meta-aero-bsp
+  
+  meta-aero-distro:
+    path:  ${TOPDIR}/../meta-aero-distro
 
-# should i remove it from here, and use it in aero-rsp.conf ?
+# TOPDIR is /build
 local_conf_header:
       my_custom_settings: |
         DL_DIR = "/build/DD"
