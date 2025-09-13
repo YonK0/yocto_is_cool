@@ -1,3 +1,4 @@
+#Only for sysvinit , need to be removed in case of using systemd
 remove_unwanted_services(){
     rm -f ${IMAGE_ROOTFS}/etc/init.d/networking
     echo "-->removing ${IMAGE_ROOTFS}/rootfs/etc/init.d/networking"
