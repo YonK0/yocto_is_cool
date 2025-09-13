@@ -257,6 +257,59 @@ bootmisc.sh   dmesg.sh      hostname.sh  mountnfs.sh  rcS                   rmno
 
 -Im planning to use falcon mode , but i don't found a good documentation for how to use it, we will get back to it later.
 
+# Custom Distribution
+
+## Separate Yocto Distribution Layer Development
+- meta-aero-distro
+
+## Custom Distro Configuration Development
+
+### 1. Support for both init managers (systemd and sysvinit) controlled by a variable
+- INIT_MANAGER bitbake variable can be set to systemd or sysvinit. I have tested both, but sysvinit is faster by almost 2 seconds.
+- Using **busybox** instead of **core-utils + bash**, because busybox is a single binary about 1-2MB while core-utils + bash almost 14 MB with max of GPL3 and GPL2 , so **busybox** is the king here.
+- Let's check that busybox is Added or not : Yes it's valid as the image shows.
+<img width="1265" height="904" alt="image(2)" src="https://github.com/user-attachments/assets/0ab3e4fe-2ddb-468c-9797-056d7367ce54" />
+
+### 2. Optimizations (no recommended packages, full control over distro features)
+```
+DISTRO_FEATURES = "ext2"
+# This feature is added by DISTRO_FEATURES_BACKFILL
+DISTRO_FEATURES:remove = "pulseaudio"
+```
+
+### 3. No Poky
+Of course!
+
+### 4. Enable CVE checks
+```
+# CVE report generated under: build/tmp/deploy/cve
+INHERIT += "cve-check"
+```
+INHERIT is used to include the cve-check bbclass. If we examine the cve-check.bbclass, we can see that it contains "addtask cve_check before do_build".
+
+### 5. Disable GPLv3 packages for all images
+```
+INCOMPATIBLE_LICENSE:pn-core-image-minimal = "AGPL-3.0-only AGPL-3.0-or-later GPL-3.0-only GPL-3.0-or-later LGPL-3.0-only"
+```
+This needs to be made specific to our target core-image-minimal; otherwise, the build will fail.
+
+### 6. Enable build information integration for all images
+- Adding `INHERIT += "image-buildinfo"` - still not sure how to implement this properly.
+```
+# Enable build information integration for all images:
+find ./build/tmp/work/aero_rsp-oe-linux-gnueabi/core-image-minimal/ -name buildinfo
+./build/tmp/work/aero_rsp-oe-linux-gnueabi/core-image-minimal/1.0/rootfs/etc/buildinfo
+```
+
+### 7. Definition of build type variables to control development or release builds
+```
+export BB_ENV_PASSTHROUGH_ADDITIONS="$BB_ENV_PASSTHROUGH_ADDITIONS IMAGE_TYPE"
+```
+- `IMAGE_TYPE="fab" bitbake core-image-minimal`: generates a fab image
+- `IMAGE_TYPE="dev" bitbake core-image-minimal`: generates a dev image
+
+
+
 ## Troubleshooting
 
 ### Build Error: Postinstall Intercept Hook Failed
