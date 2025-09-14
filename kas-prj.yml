@@ -3,7 +3,8 @@ header:
 
 machine: aero-rsp
 distro: aero-distro
-target: core-image-minimal
+#To change to fab image enter dev-image target as a a param
+target: dev-image
 
 repos:
   openembedded-core:
@@ -33,6 +34,9 @@ repos:
   
   meta-aero-distro:
     path:  ${TOPDIR}/../meta-aero-distro
+  
+  meta-aero-img:
+    path:  ${TOPDIR}/../meta-aero-img
 
 # TOPDIR is /build
 local_conf_header:
