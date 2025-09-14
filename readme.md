@@ -308,8 +308,109 @@ export BB_ENV_PASSTHROUGH_ADDITIONS="$BB_ENV_PASSTHROUGH_ADDITIONS IMAGE_TYPE"
 - `IMAGE_TYPE="fab" bitbake core-image-minimal`: generates a fab image
 - `IMAGE_TYPE="dev" bitbake core-image-minimal`: generates a dev image
 
+# Custom IMAGE
+### 1. Enable CVE checks
 
+#### Development Image
+```bash
+IMAGE_FEATURES="dbg-pkgs dev-pkgs empty-root-password"
+```
 
+#### Production Image
+```bash
+# IMAGE_FEATURES not configured for production builds
+```
+
+### 2. Enable CVE checks
+
+#### Custom Package Installation
+Using `IMAGE_INSTALL` to add necessary packages including custom kernel modules:
+```bash
+IMAGE_INSTALL += "my-module"
+```
+
+### 3. Development and Production Images
+
+#### Development Image Configuration
+
+#### Enable Debug and Development Packages
+```bash
+IMAGE_FEATURES += "dbg-pkg"
+```
+
+#### Debugging Tools
+```bash
+IMAGE_INSTALL += " \
+    gdb \
+    strace \
+    ldd \
+"
+```
+
+#### Development Tools
+```bash
+IMAGE_INSTALL += " \
+    gcc \
+    g++ \
+    make \
+"
+```
+
+#### Root Access Configuration
+```bash
+IMAGE_FEATURES += "empty-root-password"
+```
+
+### 4. Custom Package Groups
+
+Created a custom packagegroup recipe called `basic-packagegroup` inspired by `packagegroup-core-boot`:
+- Contains only necessary configurations
+- Includes French keyboard layout: `KEYMAP ?= "fr"`
+- Used by both development and production images via `IMAGE_INSTALL`
+
+### 5. Add data partition (WIC, or FlashLayout for STM32MP)
+
+#### WIC Configuration
+
+Using WKS (WIC Kickstart) files for partition management:
+- Base file: `sdimage-raspberrypi.wks` (contains `/boot` and `/root` partitions)
+- Custom file: `dev-image.wks` (adds `/data` partition for development image)
+
+#### Data Partition Setup
+- **Size**: 80MB
+- **Source**: Empty
+- **Usage**: Development image only
+
+#### Partition Verification
+
+After booting, partition layout can be verified:
+```bash
+sudo fdisk -l /dev/mmcblk0
+```
+
+**Expected Output:**
+```
+Device          Boot   Start     End Sectors  Size Id Type
+/dev/mmcblk0p1  *       8192  274431  266240  130M  c W95 FAT32 (LBA)
+/dev/mmcblk0p2        278528 5922815 5644288  2.7G 83 Linux
+/dev/mmcblk0p3       5922816 6086655  163840   80M 83 Linux
+```
+
+### Known Issues
+
+The `/data` partition (`/dev/mmcblk0p3`) is not automatically recognized by the system:
+
+```bash
+blkid
+/dev/mmcblk0p1: SEC_TYPE="msdos" LABEL_FATBOOT="boot" LABEL="boot" UUID="0F4C-F39B" BLOCK_SIZE="512" TYPE="vfat" PARTUUID="076c4a2a-01"
+/dev/mmcblk0p2: LABEL="root" UUID="b43c603a-2050-46e5-bbc6-b7597e2916d8" BLOCK_SIZE="4096" TYPE="ext4" PARTUUID="076c4a2a-02"
+/dev/mmcblk0p3: PARTUUID="076c4a2a-03"
+```
+
+**Resolution Required**: Need to define the source directory for the data partition in the WKS file.
+
+==============================================================================================================
+==============================================================================================================
 ## Troubleshooting
 
 ### Build Error: Postinstall Intercept Hook Failed
