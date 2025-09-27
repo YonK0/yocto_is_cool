@@ -29,6 +29,18 @@ repos:
     path: meta-layers/meta-raspberrypi
     type: git
 
+  meta-openembedded:
+    url: https://git.openembedded.org/meta-openembedded/meta-oe
+    refspec: styhead
+    path: meta-layers/meta-openembedded/meta-oe
+    type: git
+
+  meta-rauc:
+    url: https://github.com/rauc/meta-rauc.git
+    refspec: styhead
+    path: meta-layers/meta-rauc
+    type: git
+
   meta-aero-bsp:
     path:  ${TOPDIR}/../meta-aero-bsp
   

@@ -1,6 +1,8 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}/files:"
 
-SRC_URI += "file://minimal.cfg"
+SRC_URI += "file://minimal.cfg \
+            file://support_rauc.cfg"
+            
 SRC_URI += "file://myled-overlay.dts"
 
 do_configure:append() {

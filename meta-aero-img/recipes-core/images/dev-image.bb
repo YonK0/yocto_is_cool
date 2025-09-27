@@ -7,24 +7,24 @@ require core-base-image.inc
 IMAGE_TYPE = "dev"
 
 # Debugging packages
-IMAGE_INSTALL += " \
-    gdb \
-    strace \
-    ldd \
-"
+#IMAGE_INSTALL += " \
+#    gdb \
+#    strace \
+#    ldd \
+#"
 
 # Development packages
-IMAGE_INSTALL += " \
-    gcc \
-    g++ \
-    make \
-"
+#IMAGE_INSTALL += " \
+#    gcc \
+#    g++ \
+#    make \
+#"
 
 #Adding dev and dbg only packages
 IMAGE_FEATURES += "dev-pkgs dbg-pkgs"
 #Remove root password
 IMAGE_FEATURES += "empty-root-password"
 
-IMAGE_FSTYPES += "wic"
 #Using custom wks that include /data partition (Instead of sdimage-raspberrypi.wks)
 WKS_FILE = "dev-image.wks"
+

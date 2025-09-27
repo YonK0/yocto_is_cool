@@ -1,6 +1,7 @@
 IMAGE_INSTALL = "basic-packagegroup-core ${CORE_IMAGE_EXTRA_INSTALL}"
 
 inherit core-image
+inherit extrausers
 
 #From core-image-minimal
 IMAGE_ROOTFS_SIZE ?= "8192"
@@ -22,3 +23,16 @@ IMAGE_INSTALL += " my-module"
 ######=> busybox >>>> (coreutils + bash):
 #####################################################
 IMAGE_INSTALL += "busybox"
+# vi is not enough
+IMAGE_INSTALL += "nano"
+# Adding sudo package
+IMAGE_INSTALL += "sudo"
+# Adding our custom sudoers config
+IMAGE_INSTALL += "sudo-config"
+
+#Required for rauc integration
+IMAGE_INSTALL += "rauc rauc-conf"
+IMAGE_FSTYPES += "wic ext4"
+
+#mkfs.ext4 rauc install fail fix:
+IMAGE_INSTALL += "e2fsprogs"
