@@ -407,7 +407,109 @@ blkid
 /dev/mmcblk0p3: PARTUUID="076c4a2a-03"
 ```
 
-**Resolution Required**: Need to define the source directory for the data partition in the WKS file.
+
+- **Resolution Required**: Need to define the source directory for the data partition in the WKS file.
+
+- **Solved** : After removing --source empty thre problem is solved.
+
+# Users and Groups
+ 
+ ###  1. Create a recipe for users and groups management
+ - **Dev image** : 
+	 - IMAGE_FEATURES += "empty-root-password" => remove root password
+- **Fab image** :
+
+``` 
+# set image root password
+ROOT_PASSWORD = "root"
+DEV_PASSWORD = "mrrobot"
+
+#-m : add home dir to elliot
+
+EXTRA_USERS_PARAMS = "groupadd developers; \
+
+useradd -m -G developers -p '$(openssl passwd ${DEV_PASSWORD})' elliot; \
+usermod -p '$(openssl passwd ${ROOT_PASSWORD})' root;"
+
+```
+### 2. Make sure to use it for you custom recipes
+- Already implemented in fab-image and dev-image custom recipes.
+
+### 3. Make sure to use it for you custom 
+- Creating a new recipe called sudo-config.bb : 
+	- Customizing do_install :
+```
+install -d  ${D}/etc/sudoers.d
+echo  "elliot ALL=(ALL) ALL" > ${D}/etc/sudoers.d/devs
+```
+
+# SDK
+
+ - [ ] Need to be completed. (skiped for now ....)
+
+# OTA
+- This is kinda a hard part for me, but it's challenging at the same time.
+### 1. Integrate RAUC Yocto layer
+- From https://github.com/rauc/meta-rauc-community/tree/master/meta-rauc-raspberrypi
+	- we need to add :
+		- `IMAGE_INSTALL:append = " rauc"`
+		- `IMAGE_FSTYPES:append = " ext4"`
+		- `DISTRO_FEATURES:append = " rauc"`
+		- It is recommended to use **systemd** as init manager but i prefer **sysvinit** at this moment.
+		- Adding system.conf : 
+		
+```
+[system]
+
+compatible=aero-rsp
+bootloader=uboot
+data-directory=/data/
+
+  
+[keyring]
+path=/etc/rauc/ca.cert.pem
+  
+
+[slot.rootfs.0]
+device=/dev/mmcblk0p2
+type=ext4
+bootname=A
+
+[slot.rootfs.1]
+device=/dev/mmcblk0p3
+type=ext4
+bootname=B
+```
+### 2. Develop custom bundle
+```
+DESCRIPTION = "RAUC bundle generator"
+LICENSE = "CLOSED"
+
+inherit  bundle
+
+RAUC_BUNDLE_COMPATIBLE = "${MACHINE}"
+RAUC_BUNDLE_SLOTS = "rootfs"
+RAUC_SLOT_rootfs = "dev-image"
+```
+
+<img width="647" height="353" alt="image (1)" src="https://github.com/user-attachments/assets/3f946ccd-d378-4569-bff4-357ae035c0a0" />
+<img width="910" height="257" alt="image (2)" src="https://github.com/user-attachments/assets/ea3751a3-aa48-431e-a515-7b72c84a4875" />
+
+- After installing the bundle and reboot, we got an issue , failed to boot from **B** partition.
+  
+<img width="878" height="573" alt="image (3)" src="https://github.com/user-attachments/assets/18f2edf7-9bce-4217-80f5-87aabe5aadf8" />
+
+- **Need to be fixed!**
+
+
+### 2. Enable bundle encryption
+- Not implemented yet , this what i need to do : 
+- create bundle using the crypt format
+    
+-   enable dm-crypt support in the target’s kernel
+    
+-   have private key accessible on the target via path or PKCS#11-URI
+
 
 =============================================
 =============================================
