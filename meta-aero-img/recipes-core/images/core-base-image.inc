@@ -1,12 +1,16 @@
 IMAGE_INSTALL = "basic-packagegroup-core ${CORE_IMAGE_EXTRA_INSTALL}"
 
 inherit core-image
+
+
 inherit extrausers
 
 #From core-image-minimal
 IMAGE_ROOTFS_SIZE ?= "8192"
 IMAGE_ROOTFS_EXTRA_SPACE:append = "${@bb.utils.contains("DISTRO_FEATURES", "systemd", " + 4096", "", d)}"
 
+#Storage encryption
+IMAGE_INSTALL:append = " cryptsetup"
 
 ########## Custom kernel module #################
 IMAGE_INSTALL += " my-module"
@@ -32,7 +36,13 @@ IMAGE_INSTALL += "sudo-config"
 
 #Required for rauc integration
 IMAGE_INSTALL += "rauc rauc-conf"
-IMAGE_FSTYPES += "wic ext4"
+IMAGE_FSTYPES += "wic ext4 tar.bz2"
 
 #mkfs.ext4 rauc install fail fix:
 IMAGE_INSTALL += "e2fsprogs"
+
+# Kernel modules and zimage will be in rootfs
+IMAGE_INSTALL:append = " kernel-image kernel-modules"
+
+# Remove the kernel from the /boot partition because it is in rootfs
+RPI_EXTRA_IMAGE_BOOT_FILES:remove = "${KERNEL_IMAGETYPE}"
