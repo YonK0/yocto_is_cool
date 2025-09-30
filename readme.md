@@ -496,10 +496,19 @@ RAUC_SLOT_rootfs = "dev-image"
 <img width="910" height="257" alt="image (2)" src="https://github.com/user-attachments/assets/ea3751a3-aa48-431e-a515-7b72c84a4875" />
 
 - After installing the bundle and reboot, we got an issue , failed to boot from **B** partition.
-  
-<img width="878" height="573" alt="image (3)" src="https://github.com/user-attachments/assets/18f2edf7-9bce-4217-80f5-87aabe5aadf8" />
 
-- **Need to be fixed!**
+- The boot is crashing in uboot with "Failed to load 'boot/Image' Bad Linux ARM64 Image magic! Boot failed (err=1) Card did not respond to voltage select!"
+
+ <img width="656" height="561" alt="image(4)" src="https://github.com/user-attachments/assets/772da95b-2877-4e0c-9397-d54eb21a3496" />
+
+- After installing rauc bundle and before restarting i tried to mount /dev/mmcblk0p3 /tmp/rootfs and i could find Image under /tmp/rootfs.
+- It turns out that I need to add custom fstab recipe that mount /boot every boot:
+  ```
+	/dev/mmcblk0p1  /boot   vfat    defaults         0       0
+  ```
+- Finally it works !
+
+ <img width="704" height="347" alt="image(5)" src="https://github.com/user-attachments/assets/fae14e99-085a-46bf-a5d0-6c81a91b9717" />
 
 
 ### 2. Enable bundle encryption
