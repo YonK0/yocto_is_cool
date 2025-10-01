@@ -506,6 +506,13 @@ RAUC_SLOT_rootfs = "dev-image"
   ```
 	/dev/mmcblk0p1  /boot   vfat    defaults         0       0
   ```
+
+- Explanation : after installing the bundle the uboot.env is modified with new changes like boot order from A -> B or B -> A.
+```bash
+  ┌───(aeropop@unkown)-[/media/aeropop/boot]
+└─$ strings uboot.env | grep ORDER          
+BOOT_ORDER=B A
+```
 - Finally it works !
 
  <img width="704" height="347" alt="image(5)" src="https://github.com/user-attachments/assets/fae14e99-085a-46bf-a5d0-6c81a91b9717" />
