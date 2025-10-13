@@ -16,8 +16,6 @@ if __name__ == "__main__":
         "/"
     )
     
-    # Get the interface (you'll need to specify the interface name)
-    # Assuming it's "de.pengutronix.rauc.Installer" - adjust if needed
     interface = dbus.Interface(proxy, "de.pengutronix.rauc.Installer")
     
     completed = [False]
