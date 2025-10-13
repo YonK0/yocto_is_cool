@@ -448,7 +448,11 @@ echo  "elliot ALL=(ALL) ALL" > ${D}/etc/sudoers.d/devs
  - [ ] Need to be completed. (skiped for now ....)
 
 # OTA
-- This is kinda a hard part for me, but it's challenging at the same time.
+- This is kinda a hard part for me, but it's challenging at the same time. This a simple diagram represent how rauc update works in our project.
+  
+<img width="1143" height="391" alt="rauc2" src="https://github.com/user-attachments/assets/a21ab176-ebef-4735-96de-a4f662563805" />
+
+
 ### 1. Integrate RAUC Yocto layer
 - From https://github.com/rauc/meta-rauc-community/tree/master/meta-rauc-raspberrypi
 	- we need to add :

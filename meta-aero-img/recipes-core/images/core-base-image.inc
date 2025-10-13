@@ -1,8 +1,6 @@
 IMAGE_INSTALL = "basic-packagegroup-core ${CORE_IMAGE_EXTRA_INSTALL}"
 
 inherit core-image
-
-
 inherit extrausers
 
 #From core-image-minimal
@@ -44,5 +42,12 @@ IMAGE_INSTALL += "e2fsprogs"
 # Kernel modules and zimage will be in rootfs
 IMAGE_INSTALL:append = " kernel-image kernel-modules"
 
+IMAGE_INSTALL += "update-bundle"
+IMAGE_INSTALL += "python3"
+
 # Remove the kernel from the /boot partition because it is in rootfs
 RPI_EXTRA_IMAGE_BOOT_FILES:remove = "${KERNEL_IMAGETYPE}"
+
+########## INITRAMFS Integrated into Kernel ################################
+INITRAMFS_IMAGE = "core-image-minimal-initramfs"
+INITRAMFS_IMAGE_BUNDLE = "1"

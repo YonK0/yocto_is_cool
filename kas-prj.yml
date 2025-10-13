@@ -41,6 +41,9 @@ repos:
     path: meta-layers/meta-rauc
     type: git
 
+  meta-python:
+    path:  meta-layers/meta-openembedded/meta-python
+
   meta-aero-bsp:
     path:  ${TOPDIR}/../meta-aero-bsp
   
@@ -52,6 +55,7 @@ repos:
 
 # TOPDIR is /build
 local_conf_header:
+      #Needs to be fixed from /build to ${TOPDIR}/*
       my_custom_settings: |
         DL_DIR = "/build/DD"
         SSTATE_DIR = "/build/SS"
