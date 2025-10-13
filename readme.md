@@ -523,13 +523,40 @@ BOOT_ORDER=B A
 
 
 ### 2. Enable bundle encryption
-- Not implemented yet , this what i need to do : 
-- create bundle using the crypt format
-    
--   enable dm-crypt support in the target’s kernel
-    
--   have private key accessible on the target via path or PKCS#11-URI
 
+- Adding RAUC_BUNDLE_FORMAT = "crypt" in bundle recipe.
+- Generating bundle key and cert using : 
+  ``` openssl req -new -x509 \\n  -key bundle-encryption.key \\n  -out bundle-encryption.cert \\n  -days 3650 \\n  -subj "/CN=RAUC Bundle Encryption/O=YourCompany/C=US"```
+Adding these in layer.conf:
+```
+- RAUC_ENCRYPTION_KEY ?= "${LAYERDIR}/recipes-core/rauc/files/bundle-encryption.key"
+- RAUC_ENCRYPTION_CERT ?= "${LAYERDIR}/recipes-core/rauc/files/bundle-encryption.cert"
+```
+- Using these implementations , bundle install fails:
+  
+- <img width="769" height="316" alt="image(6)" src="https://github.com/user-attachments/assets/a9b27d45-7d42-4723-a542-4fee27649511" />
+
+### 3. Enable adaptive update support
+
+- Using ``` RAUC_SLOT_rootfs[adaptive] = "block-hash-index"``` i was able to Adaptive update.
+
+### 4. Setup docker HTTP server bound to Yocto deploy indirectory
+- Already done under /docker dir, a script is responsible for that.
+
+### 5. Develop custom D-Bus utility for RAUC
+- Adding a recipe called ```update-bundle ``` that use the object and ``` de.pengutronix.rauc.Installer ``` interface .
+```python
+  path = input("Bundle path: ")
+    
+    # Call the InstallBundle method
+    print("Installing bundle ...")
+    ret = interface.InstallBundle(path, {})
+```
+- It communicate successfully with rauc daemon but somehow the bundle is installed(still investigating ...)
+
+### 6. Test RAUC hawkbit updater
+
+- To be tested !
 
 =============================================
 =============================================
