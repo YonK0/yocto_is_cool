@@ -1,8 +1,8 @@
 # Inspired from sdimage-raspberrypi.wks
-# Adding /data partition : for now it's empty , size 80MB
+# Adding /data partition : for now it's empty , size 400MB  
 # Separate rootfs to A and B partitions for OTA process
 
-part /boot --source bootimg-partition --ondisk mmcblk0 --fstype=vfat --label boot --active --align 4096 --size 100
+part /boot --source bootimg-partition --ondisk mmcblk0 --fstype=vfat --label boot --active --align 4096 --size 400
 part / --source rootfs --ondisk mmcblk0 --fstype=ext4 --label rootfs_A --align 4096
 part / --source rootfs --ondisk mmcblk0 --fstype=ext4 --label rootfs_B --align 4096
 part /data --ondisk mmcblk0 --fstype=ext4 --label data --align 4096 --size 80

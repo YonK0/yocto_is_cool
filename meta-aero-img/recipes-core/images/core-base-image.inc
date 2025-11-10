@@ -7,9 +7,6 @@ inherit extrausers
 IMAGE_ROOTFS_SIZE ?= "8192"
 IMAGE_ROOTFS_EXTRA_SPACE:append = "${@bb.utils.contains("DISTRO_FEATURES", "systemd", " + 4096", "", d)}"
 
-#Storage encryption
-IMAGE_INSTALL:append = " cryptsetup"
-
 ########## Custom kernel module #################
 IMAGE_INSTALL += " my-module"
 ####################################################
@@ -25,6 +22,8 @@ IMAGE_INSTALL += " my-module"
 ######=> busybox >>>> (coreutils + bash):
 #####################################################
 IMAGE_INSTALL += "busybox"
+PREFERRED_PROVIDER_coreutils = "busybox"
+RDEPENDS:packagegroup-core-base-utils:remove = "coreutils"
 # vi is not enough
 IMAGE_INSTALL += "nano"
 # Adding sudo package
@@ -32,6 +31,8 @@ IMAGE_INSTALL += "sudo"
 # Adding our custom sudoers config
 IMAGE_INSTALL += "sudo-config"
 
+
+############################ RAUC integration ###########################
 #Required for rauc integration
 IMAGE_INSTALL += "rauc rauc-conf"
 IMAGE_FSTYPES += "wic ext4 tar.bz2"
@@ -39,15 +40,16 @@ IMAGE_FSTYPES += "wic ext4 tar.bz2"
 #mkfs.ext4 rauc install fail fix:
 IMAGE_INSTALL += "e2fsprogs"
 
-# Kernel modules and zimage will be in rootfs
-IMAGE_INSTALL:append = " kernel-image kernel-modules"
+# [RAUC] Kernel modules and zimage will be in rootfs ==> uboot init script load kernel from rootfs 
+# no need for it , because uboot init script is modified
+#IMAGE_INSTALL:append = " kernel-image "
 
 IMAGE_INSTALL += "update-bundle"
 IMAGE_INSTALL += "python3"
 
-# Remove the kernel from the /boot partition because it is in rootfs
-RPI_EXTRA_IMAGE_BOOT_FILES:remove = "${KERNEL_IMAGETYPE}"
+######################## Storage encryption ###############################
+IMAGE_INSTALL += "cryptsetup"
 
-########## INITRAMFS Integrated into Kernel ################################
-INITRAMFS_IMAGE = "core-image-minimal-initramfs"
-INITRAMFS_IMAGE_BUNDLE = "1"
+# Adding key to boot partition
+# For initramfs to use in rootfs decryption
+IMAGE_BOOT_FILES:append = " pass.txt "
