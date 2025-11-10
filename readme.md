@@ -558,6 +558,51 @@ Adding these in layer.conf:
 
 - To be tested !
 
+
+# Security
+### 1. Kernel initramfs integration and init development
+- First we need to create a initramfs image, to do that we can use embedded initramfs in our kernel.
+```
+    INITRAMFS_IMAGE = "base-initramfs"
+    INITRAMFS_IMAGE_BUNDLE = "1"
+```
+- Creating a custom initramfs image recipe `base-initramfs.bb` 
+- Creating our init script `boot.sh` and a recipe that copy that script as init in our initramfs image.
+- The first problem that i faced was that every boot, the initramfs was skipped kernel is mounting rootfs then sbin/init was executed.
+- After investigation i figured out that there is some kernel arguments are passed using `cmdline`, that make my initramfs from loading.
+- In our case it's `root=/dev/mmcblk0p2` which leads to directly mount that rootfs , also this can also happen using init=/sbin/init (cyber sec people may know this with `init=/bin/sh` as an argument in grub to get root hehe).
+- Using `CMDLINE_ROOTFS = ""` solved the problem.
+- Second issue , that RAUC integration is loading kernel from rootfs, where kernel-initramfs image is not there,
+- To fix this, i copied kernel initramfs bin file to boot partition  and modify RAUC uboot script to load kernel from boot partition instead.
+
+Replacing Image (kernel without initramfs) with `Image-initramfs-aero-rsp.bin`:
+
+    IMAGE_BOOT_FILES:append = " Image-initramfs-aero-rsp.bin;Image "
+
+replace : 
+
+    load ${BOOT_DEV} ${kernel_addr_r} boot/@@KERNEL_IMAGETYPE@@
+
+with :
+
+    load mmc 0:1 ${kernel_addr_r} Image
+
+### 2. Storage encryption (eMMC, SD) with dm-crypt
+- This is a very interesting part, that's i've designed a diagram to show the difference between booting without initramfs , with initramfs and with initramfs and encrypted storage (dm-crypt).
+  
+<img width="3236" height="2997" alt="initramfs-dmcrypt" src="https://github.com/user-attachments/assets/077bc405-8f2e-4535-9644-b5fb260ca2ac" />
+
+
+- Using cryptsetup tool i was able to encrypt and decrypt my storage (/dev/mmcblk0p2) , by formatting it with luks format, then copy partition content on it.
+- To make initramfs script encrypting and decrypting operations easy I have placed The key in boot partition for now  called `pass.txt` .
+- After couple of tries and a bunch of kernel panics :
+
+![end Kernel panic - : r/linuxmemes](https://i.redd.it/j2smwip0a93a1.png)
+
+- Finally my init script is running and it's end of kernel panics.
+  
+  <img width="1860" height="840" alt="image(7)" src="https://github.com/user-attachments/assets/af9a0821-c95d-4d69-ab7a-2beeb1bb81e5" />
+
 =============================================
 =============================================
 ## Troubleshooting
