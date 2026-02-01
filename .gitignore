@@ -1,2 +1,8 @@
 build/
-meta-layers/
+.kas_shell_history
+.vscode/
+DD/
+SS/
+downloads/
+sstate-cache/
+upstream-layers/

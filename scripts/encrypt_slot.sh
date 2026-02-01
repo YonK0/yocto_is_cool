@@ -10,7 +10,7 @@
 #   exit 1
 # fi
 
-pass_path="../meta-aero-img/recipes-core/images/files/pass.txt"
+pass_path="../meta-aero-sw/recipes-core/images/files/pass.txt"
 chmod 777 "$pass_path"
 
 sudo umount /dev/mapper/slot_a_crypt 2>/dev/null || true

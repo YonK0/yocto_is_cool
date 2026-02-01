@@ -1,0 +1,56 @@
+header:
+  version: 14
+
+repos:
+# Necessary layers
+  openembedded-core:
+    url: https://github.com/openembedded/openembedded-core.git
+    refspec: styhead
+    type: git
+    path: upstream-layers/openembedded-core
+    layers:
+      meta: null
+
+  bitbake:
+    url: https://github.com/openembedded/bitbake.git
+    refspec: "2.10"
+    type: git
+    path: upstream-layers/bitbake
+    layers:
+      bitbake: excluded
+
+  meta-raspberrypi:
+    url: https://git.yoctoproject.org/meta-raspberrypi
+    refspec: styhead
+    path: upstream-layers/meta-raspberrypi
+    type: git
+
+  meta-openembedded:
+    url: https://git.openembedded.org/meta-openembedded/meta-oe
+    refspec: styhead
+    path: upstream-layers/meta-openembedded/meta-oe/meta-oe
+    type: git
+
+  meta-rauc:
+    url: https://github.com/rauc/meta-rauc.git
+    refspec: styhead
+    path: upstream-layers/meta-rauc
+    type: git
+
+# Our custom layers
+  meta-pizero-bsp:
+    path:  ${TOPDIR}/../meta-pizero-bsp
+  
+  meta-pizero-distro:
+    path:  ${TOPDIR}/../meta-pizero-distro
+  
+  meta-pizero-sw:
+    path:  ${TOPDIR}/../meta-pizero-sw
+
+# TOPDIR is /build
+local_conf_header:
+      my_custom_settings: |
+        DL_DIR = "${TOPDIR}/build/downloads"
+        SSTATE_DIR = "${TOPDIR}/build/sstate-cache"
+
+#PS: DD is creating if the bitbake is downloading something | SS is created when bitbake start cooking
