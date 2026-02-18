@@ -1,7 +1,9 @@
 
-# # # Customized Linux Image for Raspberry Pi Zero 2 W with Yocto
+# Customized Linux Image for Raspberry Pi Zero 2 W with Yocto
 
 A custom embedded Linux distribution built with Yocto Project for Raspberry Pi Zero 2 W, featuring custom machine configuration, kernel optimizations, device tree overlays, and kernel modules.
+
+<img width="1280" height="640" alt="raspiandyocto" src="https://github.com/user-attachments/assets/3f6bb7a7-cc33-4849-96f7-d5d70bf5dba2" />
 
 ## Hardware Requirements
 
@@ -28,3 +30,7 @@ A custom embedded Linux distribution built with Yocto Project for Raspberry Pi Z
 ## How to build
 
     kas-container build kas/kas-dev.yml
+
+
+## Info
+- If you want to see all the project steps and what I learned, check **steps.md** in **Doc/steps/**.
