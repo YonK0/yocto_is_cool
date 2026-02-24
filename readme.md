@@ -22,6 +22,7 @@ A custom embedded Linux distribution built with Yocto Project for Raspberry Pi Z
 - [ ] OPTEE integration
 - [ ] SELinux
 - [ ] RAUC Hawkbit (Cloud-based)
+- [ ] A Yocto-based OTA update parser(libFuzzer/AFL++)
 
 
 ## Requirement
