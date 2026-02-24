@@ -25,7 +25,7 @@ A custom embedded Linux distribution built with Yocto Project for Raspberry Pi Z
 - [ ] A Yocto-based OTA update parser(libFuzzer/AFL++)
 
 
-## Requirement
+## Requirements
 - Docker installed 
 - Kas installed : `pip3 install kas`
 ## How to build
