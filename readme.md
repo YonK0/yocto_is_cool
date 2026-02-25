@@ -29,9 +29,14 @@ A custom embedded Linux distribution built with Yocto Project for Raspberry Pi Z
 - Docker installed 
 - Kas installed : `pip3 install kas`
 ## How to build
+Dev image:
 
     kas-container build kas/kas-dev.yml
 
+Prod image:
+
+    kas-container build kas/kas-dev.yml
 
 ## Info
 - If you want to see all the project steps and what I learned, check **steps.md** in **Doc/steps/**.
+
