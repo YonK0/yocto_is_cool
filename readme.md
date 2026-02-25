@@ -7,7 +7,7 @@ A custom embedded Linux distribution built with Yocto Project for Raspberry Pi Z
 
 ## Hardware Requirements
 
--   Only Raspberry Pi Zero 2 W
+-   Only Raspberry Pi Zero 2 W ($15.00)
 ## Features
 
 - [x] Kernel optimization (Fast Boot)
