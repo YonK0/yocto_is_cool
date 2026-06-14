@@ -4,6 +4,7 @@ test -n "${BOOT_ORDER}" || setenv BOOT_ORDER "A B"
 test -n "${BOOT_A_LEFT}" || setenv BOOT_A_LEFT 3
 test -n "${BOOT_B_LEFT}" || setenv BOOT_B_LEFT 3
 test -n "${BOOT_DEV}" || setenv BOOT_DEV "mmc 0:1"
+test -n "${verity_addr_r}" || setenv verity_addr_r 0x02000000
 
 setenv bootpart
 setenv raucslot
@@ -32,6 +33,14 @@ done
 
 if test -n "${bootpart}"; then
   setenv bootargs "${bootargs} root=${bootpart} rauc.slot=${raucslot}"
+  # dm-verity: import the active slot's root hash from the boot partition and
+  # put it on the kernel cmdline.
+  if load mmc 0:1 ${verity_addr_r} verity-${raucslot}.env; then
+    env import -t ${verity_addr_r} ${filesize}
+    setenv bootargs "${bootargs} verity.roothash=${verity_roothash} verity.datasize=${verity_datasize}"
+  else
+    echo "WARNING: verity-${raucslot}.env missing; rootfs integrity NOT enforced"
+  fi
   saveenv
 else
   echo "No valid RAUC slot found. Resetting tries to 3"

@@ -1,13 +1,16 @@
 [Unit]
-Description=Service to grow data partition size
+Description=Grow the LUKS2 /data partition + filesystem to fill the SD card
 DefaultDependencies=no
-Before=home.mount
+# /data is /dev/mapper/data, opened in the initramfs. Grow before it is mounted.
+Before=data.mount
+ConditionPathExists=/dev/mapper/data
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/sbin/parted --script /dev/mmcblk0 resizepart 4 100%
-ExecStart=/usr/sbin/parted --script /dev/mmcblk0 resizepart 6 100%
+ExecStart=-/usr/sbin/parted --script /dev/mmcblk0 resizepart 4 100%
+ExecStart=-/usr/sbin/cryptsetup resize data
+ExecStart=-/sbin/resize2fs /dev/mapper/data
 
 [Install]
-WantedBy=home.mount
+WantedBy=data.mount

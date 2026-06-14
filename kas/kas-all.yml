@@ -3,4 +3,6 @@ header:
   includes:
     - inc/common.yml
 
-target: dev-image
+target: 
+  - dev-image
+  - fab-image

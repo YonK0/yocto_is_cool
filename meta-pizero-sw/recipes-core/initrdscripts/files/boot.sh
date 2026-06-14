@@ -2,95 +2,56 @@
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
-mkdir -p /proc
-mkdir -p /sys
-mkdir -p /dev
-mkdir -p /mnt
-
-mount -t proc proc /proc
-mount -t sysfs sysfs /sys
-mount -t devtmpfs devtmpfs /dev
-mount /dev/mmcblk0p1 /mnt || {
-    echo "ERROR: Failed to mount boot partition!"
+fail() {
+    echo "initramfs FATAL: $*"
+    echo "Dropping to a shell. (Unattended units should be configured to reset.)"
     exec /bin/sh
 }
-echo "1. mount is okay"
 
-echo "========================================="
-echo "from the init script !"
-echo "========================================="
-#sleep 5
-#exec sh
+mkdir -p /proc /sys /dev /mnt /rootfs
+mount -t proc     proc     /proc
+mount -t sysfs    sysfs    /sys
+mount -t devtmpfs devtmpfs /dev
 
-#################################################################################################################################
-key_path="/mnt/pass.txt"
-encrypted_slot="slot_a_crypt"
-mapper_slot="/dev/mapper/slot_a_crypt"
-target_block="/dev/mmcblk0p2"
-#################################################################################################################################
+# --- read kernel cmdline -----------------------------------------------------
+# U-Boot (boot.cmd) selects the slot and appends, per the requirement, the root
+# hash on the kernel command line:
+#   root=/dev/mmcblk0pN rauc.slot=A|B verity.roothash=<hex> verity.datasize=<bytes>
+ROOTDEV=""; SLOT=""; ROOTHASH=""; DATASIZE=""
+for arg in $(cat /proc/cmdline); do
+    case "$arg" in
+        root=*)             ROOTDEV="${arg#root=}" ;;
+        rauc.slot=*)        SLOT="${arg#rauc.slot=}" ;;
+        verity.roothash=*)  ROOTHASH="${arg#verity.roothash=}" ;;
+        verity.datasize=*)  DATASIZE="${arg#verity.datasize=}" ;;
+    esac
+done
+[ -n "$ROOTDEV" ]  || fail "no root= on cmdline"
+[ -n "$ROOTHASH" ] || fail "no verity.roothash= on cmdline"
+[ -n "$DATASIZE" ] || fail "no verity.datasize= on cmdline"
 
-__encrypt_partitions()
-{
-    echo "2. encrypting paritions ......."
-    cryptsetup luksClose "$encrypted_slot" 2>/dev/null || true
-    dd if="$target_block" of=/mnt/rootfs_backup.img bs=4M status=progress 
-    cryptsetup luksFormat --key-size 512 "$target_block" --key-file "$key_path" 
-    cryptsetup luksOpen "$target_block" "$encrypted_slot" --key-file "$key_path" 
-    mkfs.ext4 /dev/mapper/"$encrypted_slot" 
-    mkdir -p /tmp/rootfs_old
-    umount /tmp/rootfs_old 2>/dev/null || true
-    mount /mnt/rootfs_backup.img /tmp/rootfs_old 
+# /boot is needed by the /data binding (it hashes the kernel Image there).
+mount -o ro /dev/mmcblk0p1 /mnt || fail "mount /boot"
 
-    echo "[+] mount encrypted fs"
-    mkdir -p /tmp/rootfs_encrypted
-    umount /dev/mapper/"$encrypted_slot" /tmp/rootfs_encrypted 2>/dev/null
+# --- Job 1: INTEGRITY --------------------------------------------------------
+echo "initramfs: opening dm-verity rootfs on $ROOTDEV (slot ${SLOT:-?})"
+veritysetup open "$ROOTDEV" rootfs "$ROOTDEV" "$ROOTHASH" \
+        --hash-offset="$DATASIZE" \
+    || fail "dm-verity open failed -- ROOTFS TAMPERED or root hash mismatch"
 
-    mount /dev/mapper/slot_a_crypt /tmp/rootfs_encrypted
+mount -o ro /dev/mapper/rootfs /rootfs || fail "mount verity rootfs"
+[ -d /rootfs/sbin ] || fail "verity rootfs sanity check failed"
 
-    echo "[+] copying rootfs from decrypted to encrypted partition"
-    rsync -avh --progress /tmp/rootfs_old/ /tmp/rootfs_encrypted/ 
+# --- Job 2: CONFIDENTIALITY --------------------------------------------------
+if [ -f /data-unlock-binding.sh ]; then
+    . /data-unlock-binding.sh || echo "initramfs: WARN /data not unlocked"
+else
+    echo "initramfs: WARN data-unlock-binding.sh missing; /data stays locked"
+fi
 
-    sync
-    rm -f /mnt/rootfs_backup.img
-
-    # For safety    
-    umount /tmp/rootfs_encrypted/ || true
-    umount /tmp/rootfs_old/ || true
-    #  cryptsetup luksClose "$encrypted_slot" // no need to close if we are going using it later in decryption.
-    echo "=======>encryption done<======="
-}
-
-__isEncrypted()
-{
-    cryptsetup isLuks /dev/mmcblk0p2
-    return $?
-}
-__mount_rootfs()
-{
-    echo "3. mount roofs"
-    mkdir -p /rootfs
-
-    mount "$mapper_slot" /rootfs
-
-    if [ ! -d /rootfs/sbin ]; then
-        echo "from initramfs Failed to mount root filesystem!"
-        exec /bin/sh
-    fi
-
-    echo "4. roofs is mounted"
-    umount /proc
-    umount /sys
-    umount /dev
-    umount /mnt
-
-    echo "5. switch root"
-    # give the hand to the new rootfs
-    exec switch_root /rootfs /sbin/init
-}
-
-#### Main
-echo "encryption ..."
-__encrypt_partitions
-#__decrypt_partitions
-echo "mounting rootfs"
-__mount_rootfs
+# --- hand over ---------------------------------------------------------------
+umount /mnt  2>/dev/null
+umount /sys  2>/dev/null
+umount /proc 2>/dev/null
+echo "initramfs: switch_root -> /sbin/init"
+exec switch_root /rootfs /sbin/init

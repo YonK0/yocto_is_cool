@@ -1,0 +1,22 @@
+# meta-pizero SD image (wic). This is a .wks.in so ${IMAGE_LINK_NAME} expands.
+#
+#   p1 boot (FAT)            : firmware, kernel "Image" (kernel+initramfs
+#                              bundle), dtbs/overlays, u-boot, boot.scr, and the
+#                              per-slot dm-verity env files verity-A.env/verity-B.env
+#   p2 rootfs_A / p3 rootfs_B: dm-verity images (ext4 + appended hash tree),
+#                              written RAW. A and B are identical at flash time.
+#   p4 /data                 : LUKS2, provisioned on first boot by the initramfs
+#                              (data-unlock-binding.sh); grown to fill the card
+#                              by rauc-grow-data-partition.service.
+#
+# The rootfs slots use the dm-verity image via --source rawcopy (NOT
+# --source rootfs) so the appended hash tree is included.
+#
+# NOTE: rawcopy sizes each slot to the image. For OTA headroom, give rootfs_A/B
+# a fixed --size with margin once you know the built image size, keeping A and B
+# equal.
+
+part /boot --source bootimg-partition --ondisk mmcblk0 --fstype=vfat --label boot --active --align 4096 --size 400
+part / --source rawcopy --sourceparams="file=${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.ext4.verity" --ondisk mmcblk0 --fstype=ext4 --align 4096
+part / --source rawcopy --sourceparams="file=${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.ext4.verity" --ondisk mmcblk0 --fstype=ext4 --align 4096
+part /data --ondisk mmcblk0 --fstype=ext4 --label data --align 4096 --size 80

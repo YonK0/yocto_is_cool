@@ -3,7 +3,6 @@ LICENSE = "CLOSED"
 
 PACKAGE_INSTALL = "initramfs-basic \
                    busybox \
-                   rsync \
                    base-passwd \
                    cryptsetup \
                    e2fsprogs-mke2fs \

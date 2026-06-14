@@ -1,5 +1,5 @@
 header:
-  version: 14
+  version: 12
 
 repos:
 # Necessary layers
@@ -26,15 +26,22 @@ repos:
     type: git
 
   meta-openembedded:
-    url: https://git.openembedded.org/meta-openembedded/meta-oe
+    url: https://git.openembedded.org/meta-openembedded
     refspec: styhead
-    path: upstream-layers/meta-openembedded/meta-oe/meta-oe
+    path: upstream-layers/meta-openembedded/meta-oe
     type: git
 
   meta-rauc:
     url: https://github.com/rauc/meta-rauc.git
     refspec: styhead
     path: upstream-layers/meta-rauc
+    type: git
+
+  # Provides the dm-verity integration
+  meta-security:
+    url: https://git.yoctoproject.org/meta-security
+    refspec: styhead
+    path: upstream-layers/meta-security
     type: git
 
 # Our custom layers
@@ -54,3 +61,7 @@ local_conf_header:
         SSTATE_DIR = "${TOPDIR}/build/sstate-cache"
 
 #PS: DD is creating if the bitbake is downloading something | SS is created when bitbake start cooking
+
+
+machine: pizero
+distro: aero-distro

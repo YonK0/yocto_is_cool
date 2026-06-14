@@ -9,12 +9,12 @@ sudo rm -f /tmp/rootA/home/root/mybundle-*.raucb
 sudo rm -f /tmp/rootB/home/root/mybundle-*.raucb
 
 echo "Removing old file in both partitions"
-sudo  cp /home/g701943/workspace/yocto_is_cool/build/tmp/deploy/images/aero-rsp/mybundle-aero-rsp-*.raucb /tmp/rootA/home/root/
+sudo  cp /home/g701943/workspace/yocto_is_cool/build/tmp/deploy/images/pizero/mybundle-pizero-*.raucb /tmp/rootA/home/root/
 sync
 umount /tmp/rootA
 echo "Done copying bundle to rootA"
 
-sudo  cp /home/g701943/workspace/yocto_is_cool/build/tmp/deploy/images/aero-rsp/mybundle-aero-rsp-*.raucb /tmp/rootB/home/root/
+sudo  cp /home/g701943/workspace/yocto_is_cool/build/tmp/deploy/images/pizero/mybundle-pizero-*.raucb /tmp/rootB/home/root/
 sync
 umount /tmp/rootB
 echo "Done copying bundle to rootB"

@@ -14,7 +14,8 @@ SYSTEMD_SERVICE:${PN}-grow-data-part = "rauc-grow-data-partition.service"
 
 PACKAGES += "rauc-grow-data-part"
 
-RDEPENDS:${PN}-grow-data-part += "parted"
+# grow service now also resizes the LUKS2 mapping + ext4 (cryptsetup, resize2fs)
+RDEPENDS:${PN}-grow-data-part += "parted cryptsetup e2fsprogs-resize2fs"
 
 do_install:append() {
     install -d ${D}${systemd_unitdir}/system/

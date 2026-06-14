@@ -47,12 +47,38 @@ IMAGE_INSTALL += "e2fsprogs"
 IMAGE_INSTALL += "update-bundle"
 IMAGE_INSTALL += "python3"
 
-######################## Storage encryption ###############################
+######################## Storage security ###############################
+
+# --- Job 1: dm-verity, read-only rootfs ---------------------------------
+IMAGE_CLASSES += "dm-verity-img"
+
+DM_VERITY_IMAGE = "${PN}"
+DM_VERITY_IMAGE_TYPE = "ext4"
+IMAGE_FSTYPES += "ext4.verity"
+IMAGE_FEATURES += "read-only-rootfs"
+
+deploy_verity_boot_env() {
+    venv="${STAGING_VERITY_DIR}/${IMAGE_BASENAME}.${DM_VERITY_IMAGE_TYPE}.verity.env"
+    if [ ! -f "${venv}" ]; then
+        bbfatal "dm-verity env not found at ${venv} (check dm-verity-img staging)"
+    fi
+    . "${venv}"   # ROOT_HASH / DATA_SIZE
+    for slot in A B; do
+        printf 'verity_roothash=%s\nverity_datasize=%s\n' \
+            "${ROOT_HASH}" "${DATA_SIZE}" > "${DEPLOY_DIR_IMAGE}/verity-${slot}.env"
+    done
+    # Also publish the raw env (ROOT_HASH / DATA_SIZE) for the RAUC bundle hook.
+    cp "${venv}" "${DEPLOY_DIR_IMAGE}/verity.env"
+}
+
+do_image_wic[prefuncs] += "deploy_verity_boot_env"
+IMAGE_TYPEDEP:wic += "${DM_VERITY_IMAGE_TYPE}.verity"
+IMAGE_BOOT_FILES:append = " verity-A.env verity-B.env"
+
+WICVARS:append = " IMGDEPLOYDIR"
+
+# --- Job 2: LUKS2 on /data ----------------------------------------------.
 IMAGE_INSTALL += "cryptsetup"
 
-# Add passphrase to our boot files -> For initramfs to use in rootfs decryption
-EXTRA_IMAGEDEPENDS += "passphrase"
-IMAGE_BOOT_FILES:append = " pass.txt "
-
-#Adding ssh
+# SSH
 IMAGE_FEATURES += "ssh-server-dropbear"

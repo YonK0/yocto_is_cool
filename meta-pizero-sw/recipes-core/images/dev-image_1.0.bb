@@ -27,5 +27,4 @@ IMAGE_INSTALL:remove = "kernel-image"
 #Remove root password
 IMAGE_FEATURES += "empty-root-password"
 
-#Using custom wks that include /data partition (Instead of sdimage-raspberrypi.wks)
-WKS_FILE = "dev-image.wks"
+WKS_FILE = "pizero-image.wks.in"

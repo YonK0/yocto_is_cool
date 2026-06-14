@@ -1,5 +1,5 @@
 [update]
-compatible=aero-rsp
+compatible=pizero
 version=1.0
 description=mybundle version 1.0-r0
 build=20251005213533
@@ -8,5 +8,5 @@ build=20251005213533
 format=crypt
 
 [image.rootfs]
-filename=dev-image-aero-rsp.rootfs.ext4
+filename=dev-image-pizero.rootfs.ext4
 adaptive=block-hash-index

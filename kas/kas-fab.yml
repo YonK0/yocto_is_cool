@@ -1,8 +1,6 @@
 header:
-  version: 14
+  version: 12
   includes:
     - inc/common.yml
 
-machine: aero-rsp
-distro: aero-distro
-target: dev-fab
+target: fab-image

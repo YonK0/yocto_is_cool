@@ -1,8 +1,7 @@
 header:
-  version: 14
+  version: 12
   includes:
     - inc/common.yml
 
 machine: qemuarm
-distro: aero-distro
 target: dev-image
