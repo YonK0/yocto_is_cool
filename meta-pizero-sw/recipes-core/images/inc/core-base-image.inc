@@ -82,3 +82,7 @@ IMAGE_INSTALL += "cryptsetup"
 
 # SSH
 IMAGE_FEATURES += "ssh-server-dropbear"
+
+# Add wifi (this board is BCM43430 per dmesg; brcmfmac is a module so it loads
+# after the rootfs is mounted and the firmware is reachable)
+IMAGE_INSTALL += "linux-firmware-bcm43430 kernel-module-brcmfmac kernel-module-brcmfmac-wcc wpa-supplicant"

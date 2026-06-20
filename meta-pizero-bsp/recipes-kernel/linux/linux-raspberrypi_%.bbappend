@@ -2,7 +2,8 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}/files:"
 
 SRC_URI += "file://minimal.cfg \
             file://support_rauc.cfg \
-            file://dm-crypt.cfg"
+            file://dm-crypt.cfg \
+            file://wifi.cfg"
             
 SRC_URI += "file://myled-overlay.dts"
 

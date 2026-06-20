@@ -1,5 +1,5 @@
-SUMMARY = "I don't know why i added this module"
-DESCRIPTION = "Should be completed"
+SUMMARY = "Example kernel module for testing Yocto build system"
+DESCRIPTION = "Example kernel module for testing Yocto build system"
 LICENSE = "GPL-2.0-only"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=d1235e54ccbde07b307b638c79b854fe"
 

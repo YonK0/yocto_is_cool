@@ -14,8 +14,6 @@ mount -t sysfs    sysfs    /sys
 mount -t devtmpfs devtmpfs /dev
 
 # --- read kernel cmdline -----------------------------------------------------
-# U-Boot (boot.cmd) selects the slot and appends, per the requirement, the root
-# hash on the kernel command line:
 #   root=/dev/mmcblk0pN rauc.slot=A|B verity.roothash=<hex> verity.datasize=<bytes>
 ROOTDEV=""; SLOT=""; ROOTHASH=""; DATASIZE=""
 for arg in $(cat /proc/cmdline); do
@@ -48,6 +46,10 @@ if [ -f /data-unlock-binding.sh ]; then
 else
     echo "initramfs: WARN data-unlock-binding.sh missing; /data stays locked"
 fi
+
+# Mount /data here so systemd sees it pre-mounted, instead of blocking ~90s
+# waiting for udev to recreate /dev/mapper/data after switch_root.
+[ -e /dev/mapper/data ] && mount /dev/mapper/data /rootfs/data 2>/dev/null
 
 # --- hand over ---------------------------------------------------------------
 umount /mnt  2>/dev/null

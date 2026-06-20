@@ -16,9 +16,11 @@ do_install() {
     # Install the isolated /data unlock binding (sourced by /init) and the
     # on-card secret it bakes into the KDF. See data-unlock-binding.sh header:
     # this is the deliberately-weak, swappable link.
-    install -m 0755 ${WORKDIR}/sources-unpack/data-unlock-binding.sh ${D}/data-unlock-binding.sh
-    install -d ${D}/etc
-    install -m 0400 ${WORKDIR}/sources-unpack/binding-secret ${D}/etc/data-binding-secret
+    if [ "${DATA_ENCRYPTION}" = "1" ]; then
+        install -m 0755 ${WORKDIR}/sources-unpack/data-unlock-binding.sh ${D}/data-unlock-binding.sh
+        install -d ${D}/etc
+        install -m 0400 ${WORKDIR}/sources-unpack/binding-secret ${D}/etc/data-binding-secret
+    fi
 
     # Create essential directories
     install -d ${D}/dev
