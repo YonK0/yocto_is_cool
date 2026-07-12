@@ -1,9 +1,15 @@
 
-# Customized Linux Image for Raspberry Pi Zero 2 W with Yocto
+# Meta-pizero
+
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/2cbf40bc-ce5e-4730-9089-61470a4e4f6a"
+       alt="Project illustration"
+       width="300">
+</p>
 
 A custom embedded Linux distribution built with Yocto Project for Raspberry Pi Zero 2 W, featuring custom machine configuration, kernel optimizations, device tree overlays, and kernel modules.
 
-<img width="1280" height="640" alt="raspiandyocto" src="https://github.com/user-attachments/assets/3f6bb7a7-cc33-4849-96f7-d5d70bf5dba2" />
 
 ## Hardware Requirements
 
