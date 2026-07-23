@@ -41,7 +41,7 @@ Dev image:
 
 Prod image:
 
-    kas-container build kas/kas-dev.yml
+    kas-container build kas/kas-fab.yml
 
 ## Info
 - If you want to see all the project steps and what I learned, check **steps.md** in **Doc/steps/**.
