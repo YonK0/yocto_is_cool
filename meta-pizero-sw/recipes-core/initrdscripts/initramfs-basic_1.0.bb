@@ -5,22 +5,14 @@ LICENSE = "CLOSED"
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
 SRC_URI = "file://boot.sh \
-           file://data-unlock-binding.sh \
-           file://binding-secret"
+           file://otp-key.sh"
 
 S = "${WORKDIR}/sources-unpack"
 do_install() {
-    # Install init script
+    # Install init script and the OTP key helper it sources (rootfs + /data LUKS
+    # keys are derived from the per-device customer OTP). See otp-key.sh.
     install -m 0755 ${WORKDIR}/sources-unpack/boot.sh ${D}/init
-
-    # Install the isolated /data unlock binding (sourced by /init) and the
-    # on-card secret it bakes into the KDF. See data-unlock-binding.sh header:
-    # this is the deliberately-weak, swappable link.
-    if [ "${DATA_ENCRYPTION}" = "1" ]; then
-        install -m 0755 ${WORKDIR}/sources-unpack/data-unlock-binding.sh ${D}/data-unlock-binding.sh
-        install -d ${D}/etc
-        install -m 0400 ${WORKDIR}/sources-unpack/binding-secret ${D}/etc/data-binding-secret
-    fi
+    install -m 0755 ${WORKDIR}/sources-unpack/otp-key.sh ${D}/otp-key.sh
 
     # Create essential directories
     install -d ${D}/dev
@@ -32,6 +24,6 @@ do_install() {
     mknod -m 666 ${D}/dev/null c 1 3
 }
 
-FILES:${PN} = "/init /data-unlock-binding.sh /etc/data-binding-secret /dev /proc /sys"
+FILES:${PN} = "/init /otp-key.sh /dev /proc /sys"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"

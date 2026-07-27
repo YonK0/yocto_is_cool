@@ -5,4 +5,4 @@ header:
 
 target: 
   - dev-image
-  - fab-image
+  - prod-image

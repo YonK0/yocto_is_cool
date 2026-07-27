@@ -47,6 +47,9 @@ IMAGE_INSTALL += "e2fsprogs"
 IMAGE_INSTALL += "update-bundle"
 IMAGE_INSTALL += "python3"
 
+############################ WIC integration ###########################
+WKS_FILE = "pizero-image.wks.in"
+
 ######################## Storage security ###############################
 
 # --- Job 1: dm-verity, read-only rootfs ---------------------------------
@@ -77,8 +80,13 @@ IMAGE_BOOT_FILES:append = " verity-A.env verity-B.env"
 
 WICVARS:append = " IMGDEPLOYDIR"
 
-# --- Job 2: LUKS2 on /data ----------------------------------------------.
+# Encryption tool
 IMAGE_INSTALL += "cryptsetup"
+
+# Fixed A/B slot size (MiB). MUST be >= the built ext4.verity image size + 32MiB
+ROOTFS_SLOT_SIZE ?= "768"
+WICVARS:append = " ROOTFS_SLOT_SIZE"
+####################################################
 
 # SSH
 IMAGE_FEATURES += "ssh-server-dropbear"
