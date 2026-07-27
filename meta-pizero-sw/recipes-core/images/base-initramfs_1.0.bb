@@ -6,6 +6,7 @@ PACKAGE_INSTALL = "initramfs-basic \
                    base-passwd \
                    cryptsetup \
                    e2fsprogs-mke2fs \
+                   userland \
                    ${ROOTFS_BOOTSTRAP_INSTALL}"
 
 # Do not pollute the initrd image with rootfs features

@@ -24,7 +24,9 @@ IMAGE_TYPE = "dev"
 #IMAGE_FEATURES += "dev-pkgs dbg-pkgs"
 
 IMAGE_INSTALL:remove = "kernel-image"
+
 #Remove root password
 IMAGE_FEATURES += "empty-root-password"
 
-WKS_FILE = "pizero-image.wks.in"
+# tool to check systemd chain
+IMAGE_INSTALL:append = " systemd-analyze"

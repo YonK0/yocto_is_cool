@@ -1,10 +1,10 @@
-DESCRIPTION = "Custom Fab image"
+DESCRIPTION = "Custom prod image"
 LICENSE = "CLOSED"
 
 require inc/core-base-image.inc
 
-#Using fab distro conf
-IMAGE_TYPE = "fab"
+#Using prod distro conf
+IMAGE_TYPE = "prod"
 
 # set image root password
 # Needs to be removed and replaced with hash directly
